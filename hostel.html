@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager - HostelConnect</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="logo">Hostel Manager</div>
+        <button onclick="logout()" class="nav-btn">Logout</button>
+    </header>
+
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('bookings')">Bookings</div>
+            <div class="tab" onclick="switchTab('complaints')">Complaints</div>
+            <div class="tab" onclick="switchTab('announce')">Announcements</div>
+        </div>
+
+        <!-- Bookings -->
+        <section id="bookings">
+            <h2>Room Requests</h2>
+            <div id="hostelBookings" class="grid mt-2"></div>
+        </section>
+
+        <!-- Complaints -->
+        <section id="complaints" class="hidden">
+            <h2>Resident Complaints</h2>
+            <div id="hostelComplaints" class="grid mt-2"></div>
+        </section>
+
+        <!-- Announcements -->
+        <section id="announce" class="hidden">
+            <div class="card" style="max-width: 600px;">
+                <h3>Post Announcement</h3>
+                <form onsubmit="postAnnouncement(event)">
+                    <textarea id="announceMsg" class="form-control" placeholder="E.g., Mess menu changed..." required></textarea>
+                    <button class="btn">Post Update</button>
+                </form>
+            </div>
+        </section>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', loadHostelDashboard);</script>
+</body>
+</html>

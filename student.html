@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student - HostelConnect</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="logo">HostelConnect</div>
+        <button onclick="logout()" class="nav-btn">Logout</button>
+    </header>
+
+    <div class="container">
+        <!-- Announcements (Pinned Top) -->
+        <div id="announcementList"></div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('find')">Find Hostel</div>
+            <div class="tab" onclick="switchTab('my-bookings')">My Bookings</div>
+            <div class="tab" onclick="switchTab('complaints')">Complaints</div>
+        </div>
+
+        <!-- 1. Find Hostel -->
+        <section id="find">
+            <div class="filter-box">
+                <div>
+                    <strong>Distance Filter</strong>
+                    <p class="text-sm" style="color:#666">Show hostels within <span id="distValue" style="color:var(--primary); font-weight:bold;">10 km</span></p>
+                </div>
+                <input type="range" min="1" max="10" value="10" style="width:200px" oninput="filterHostels(this.value)">
+            </div>
+            <div id="hostelList" class="grid"></div>
+        </section>
+
+        <!-- 2. My Bookings -->
+        <section id="my-bookings" class="hidden">
+            <h2>Booking Status</h2>
+            <div id="bookingList" class="grid mt-2"></div>
+        </section>
+
+        <!-- 3. Complaints -->
+        <section id="complaints" class="hidden">
+            <div class="grid">
+                <div class="card">
+                    <h3>Report Issue</h3>
+                    <form onsubmit="submitComplaint(event)">
+                        <select id="complaintHostelSelect" class="form-control"></select>
+                        <textarea id="complaintText" class="form-control" placeholder="Describe issue (e.g. WiFi not working)" required></textarea>
+                        <button class="btn">Submit</button>
+                    </form>
+                </div>
+                <div>
+                    <h3>Complaint History</h3>
+                    <div id="studentComplaintList"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', loadStudentDashboard);</script>
+</body>
+</html>

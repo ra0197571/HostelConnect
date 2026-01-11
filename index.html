@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - HostelConnect</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <h1 class="logo" style="margin-bottom: 10px;">HostelConnect</h1>
+            <p style="color: #64748B; margin-bottom: 30px;">Find. Book. Live.</p>
+            
+            <form id="loginForm">
+                <select id="role" class="form-control">
+                    <option value="student">Student</option>
+                    <option value="hostel">Hostel Manager</option>
+                    <option value="admin">Admin</option>
+                </select>
+                <input type="text" placeholder="Username / Reg ID" class="form-control" required>
+                <input type="password" placeholder="Password" class="form-control" required>
+                <button type="submit" class="btn">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const role = document.getElementById('role').value;
+            localStorage.setItem('currentUserRole', role);
+            window.location.href = `${role}.html`;
+        });
+    </script>
+</body>
+</html>
