@@ -3,35 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - HostelConnect</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>HostelConnect - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* --- Animations --- */
+        @keyframes gradient-shift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        @keyframes float-delayed { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        @keyframes pulse-slow { 0%, 100% { opacity: 0.4; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.05); } }
+        @keyframes twinkle { 0%, 100% { opacity: 0.2; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } }
+        @keyframes gradient-x { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        
+        .animate-gradient-shift { animation: gradient-shift 15s ease infinite; background-size: 400% 400%; }
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        .animate-float-delayed { animation: float-delayed 7s ease-in-out infinite; }
+        .animate-pulse-slow { animation: pulse-slow 8s ease-in-out infinite; }
+        .animate-twinkle { animation: twinkle 3s ease-in-out infinite; }
+        .animate-gradient-x { animation: gradient-x 3s ease infinite; background-size: 200% 200%; }
+        
+        .form-section { transition: all 0.5s ease-in-out; overflow: hidden; max-height: 1000px; opacity: 1; }
+        .form-section.collapsed { max-height: 0; opacity: 0; margin: 0; padding: 0; }
+    </style>
 </head>
-<body>
-    <div class="auth-wrapper">
-        <div class="auth-card">
-            <h1 class="logo" style="margin-bottom: 10px;">HostelConnect</h1>
-            <p style="color: #64748B; margin-bottom: 30px;">Find. Book. Live.</p>
+<body class="font-sans antialiased text-gray-900">
+
+    <div class="min-h-screen w-full flex items-center justify-center overflow-hidden relative">
+        
+        <!-- Background Effects -->
+        <div class="absolute inset-0 bg-gradient-to-br from-[#0f172a] via-[#1e40af] to-[#3b82f6] animate-gradient-shift"></div>
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl animate-float"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-indigo-500/20 rounded-full blur-3xl animate-float-delayed"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-3xl animate-pulse-slow"></div>
+        </div>
+
+        <!-- Main Card -->
+        <div class="relative w-full max-w-md mx-4 transition-all duration-700 ease-out opacity-100 translate-y-0" id="mainCard">
+            <div class="absolute -inset-1 bg-gradient-to-r from-blue-500/20 via-indigo-500/20 to-blue-500/20 rounded-3xl blur-xl opacity-70 animate-pulse-slow"></div>
             
-            <form id="loginForm">
-                <select id="role" class="form-control">
-                    <option value="student">Student</option>
-                    <option value="hostel">Hostel Manager</option>
-                    <option value="admin">Admin</option>
-                </select>
-                <input type="text" placeholder="Username / Reg ID" class="form-control" required>
-                <input type="password" placeholder="Password" class="form-control" required>
-                <button type="submit" class="btn">Login</button>
-            </form>
+            <div class="relative bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl p-8 md:p-10 border border-white/20">
+                
+                <!-- Logo & Header -->
+                <div class="text-center mb-6 relative">
+                    
+                    <h1 class="text-3xl md:text-4xl font-bold italic bg-gradient-to-r from-[#1e40af] via-[#2563eb] to-[#1e40af] bg-clip-text text-transparent mb-2 animate-gradient-x">
+                        HostelConnect
+                    </h1>
+                    <p class="text-gray-500 text-sm md:text-base" id="headerSubtitle">
+                        Smart Hostel Management for Campus Life
+                    </p>
+                </div>
+
+                <!-- Toggle Buttons -->
+                <div class="bg-gray-100/80 p-1.5 rounded-xl flex relative mb-6 border border-gray-200">
+                    <div id="toggleBg" class="absolute inset-y-1.5 left-1.5 w-[calc(50%-6px)] bg-white rounded-lg shadow-sm transition-all duration-300 ease-out border border-gray-200/50"></div>
+                    <button onclick="switchMode('signin')" id="btn-signin" class="relative z-10 w-1/2 py-2 text-sm font-semibold text-blue-600 transition-colors duration-300 text-center">Sign In</button>
+                    <button onclick="switchMode('signup')" id="btn-signup" class="relative z-10 w-1/2 py-2 text-sm font-semibold text-gray-500 transition-colors duration-300 text-center">Sign Up</button>
+                </div>
+
+                <!-- Form -->
+                <form onsubmit="handleSubmit(event)" class="space-y-4">
+                    
+                    <!-- Name (Signup Only) -->
+                    <div id="nameField" class="form-section collapsed space-y-2">
+                        <label class="block text-sm font-medium text-gray-600">Full Name</label>
+                        <input type="text" placeholder="John Doe" class="w-full px-4 py-3.5 bg-gray-50/80 border-2 border-gray-200 rounded-xl text-gray-700 outline-none focus:border-blue-500 transition-all">
+                    </div>
+
+                    <!-- Role Selector (CRITICAL FOR LOGIC) -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-600">Login As</label>
+                        <div class="relative">
+                            <select id="userRole" class="w-full px-4 py-3.5 bg-gray-50/80 border-2 border-gray-200 rounded-xl text-gray-700 appearance-none cursor-pointer outline-none focus:border-blue-500 transition-all">
+                                <option value="student">Student</option>
+                                <option value="hostel">Hostel Manager</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                            <svg class="w-5 h-5 text-gray-400 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                        </div>
+                    </div>
+
+                    <!-- Username -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-600">Username / Reg ID</label>
+                        <input type="text" id="username" placeholder="Enter ID" required class="w-full px-4 py-3.5 bg-gray-50/80 border-2 border-gray-200 rounded-xl text-gray-700 outline-none focus:border-blue-500 transition-all">
+                    </div>
+
+                    <!-- Password -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-600">Password</label>
+                        <div class="relative group">
+                            <input type="password" id="password" placeholder="Enter password" required class="w-full px-4 py-3.5 pr-12 bg-gray-50/80 border-2 border-gray-200 rounded-xl text-gray-700 outline-none focus:border-blue-500 transition-all">
+                        </div>
+                    </div>
+
+                    <!-- Confirm Password (Signup Only) -->
+                    <div id="confirmPasswordField" class="form-section collapsed space-y-2">
+                        <label class="block text-sm font-medium text-gray-600">Confirm Password</label>
+                        <input type="password" placeholder="Confirm password" class="w-full px-4 py-3.5 bg-gray-50/80 border-2 border-gray-200 rounded-xl text-gray-700 outline-none focus:border-blue-500 transition-all">
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" id="submitBtn" class="relative w-full py-4 mt-2 bg-gradient-to-r from-[#1e40af] via-[#2563eb] to-[#1e40af] bg-[length:200%_100%] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] animate-gradient-x">
+                        <span id="submitText">Login</span>
+                    </button>
+                </form>
+
+                <!-- Footer -->
+                <div class="mt-8 text-center space-y-2">
+                    <p class="text-sm text-gray-500" id="footerText">
+                        Don't have an account? <a href="#" onclick="switchMode('signup'); return false;" class="text-blue-600 font-semibold hover:underline">Sign up</a>
+                    </p>
+                    <p class="text-xs text-gray-400">© 2026 HostelConnect</p>
+                </div>
+            </div>
         </div>
     </div>
 
+    <!-- LOGIC SCRIPT -->
     <script>
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
+        let isSignUp = false;
+
+        // --- 1. UI Switching Logic (Visuals) ---
+        function switchMode(mode) {
+            isSignUp = mode === 'signup';
+            const toggleBg = document.getElementById('toggleBg');
+            const btnSignin = document.getElementById('btn-signin');
+            const btnSignup = document.getElementById('btn-signup');
+            const nameField = document.getElementById('nameField');
+            const confirmPasswordField = document.getElementById('confirmPasswordField');
+            const submitText = document.getElementById('submitText');
+            const footerText = document.getElementById('footerText');
+
+            if (isSignUp) {
+                toggleBg.style.transform = 'translateX(100%)';
+                btnSignin.classList.replace('text-blue-600', 'text-gray-500');
+                btnSignup.classList.replace('text-gray-500', 'text-blue-600');
+                nameField.classList.remove('collapsed');
+                confirmPasswordField.classList.remove('collapsed');
+                submitText.textContent = "Create Account";
+                footerText.innerHTML = 'Already have an account? <a href="#" onclick="switchMode(\'signin\'); return false;" class="text-blue-600 font-semibold hover:underline">Sign in</a>';
+            } else {
+                toggleBg.style.transform = 'translateX(0)';
+                btnSignin.classList.replace('text-gray-500', 'text-blue-600');
+                btnSignup.classList.replace('text-blue-600', 'text-gray-500');
+                nameField.classList.add('collapsed');
+                confirmPasswordField.classList.add('collapsed');
+                submitText.textContent = "Login";
+                footerText.innerHTML = 'Don\'t have an account? <a href="#" onclick="switchMode(\'signup\'); return false;" class="text-blue-600 font-semibold hover:underline">Sign up</a>';
+            }
+        }
+
+        // --- 2. AUTHENTICATION LOGIC (Functional) ---
+        function handleSubmit(e) {
             e.preventDefault();
-            const role = document.getElementById('role').value;
-            localStorage.setItem('currentUserRole', role);
-            window.location.href = `${role}.html`;
-        });
+            
+            const btn = document.getElementById('submitBtn');
+            const originalText = document.getElementById('submitText').textContent;
+            
+            // Show Loading Spinner
+            btn.disabled = true;
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+            document.getElementById('submitText').innerHTML = `Processing...`;
+
+            // Get Data
+            const role = document.getElementById('userRole').value;
+            const username = document.getElementById('username').value;
+
+            // Simulate API Delay
+            setTimeout(() => {
+                // Save Role to LocalStorage
+                localStorage.setItem('currentUserRole', role);
+                
+                // Redirect based on role
+                if (role === 'student') window.location.href = 'student.html';
+                else if (role === 'hostel') window.location.href = 'hostel.html';
+                else if (role === 'admin') window.location.href = 'admin.html';
+                
+            }, 1000); // 1 second delay for effect
+        }
     </script>
 </body>
 </html>

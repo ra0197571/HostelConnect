@@ -3,34 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - HostelConnect</title>
+    <title>HostelConnect | Admin Dashboard</title>
+
+    <!-- Main Styles -->
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
+
+    <!-- ================= HEADER ================= -->
     <header class="header">
-        <div class="logo">HostelConnect Admin</div>
+        <div class="logo">HostelConnect <span style="font-weight:400;">Admin</span></div>
         <button onclick="logout()" class="nav-btn">Logout</button>
     </header>
 
-    <div class="container">
-        <div class="grid" style="margin-bottom:30px;">
-            <div class="card" style="text-align:center;">
+    <!-- ================= MAIN CONTENT ================= -->
+    <main class="container">
+
+        <!-- ===== STATS CARDS ===== -->
+        <section class="grid" style="margin-bottom: 35px;">
+
+            <article class="card" style="text-align:center;">
                 <h1>🏠</h1>
                 <h2 id="totalHostels">0</h2>
-                <p>Total Hostels</p>
-            </div>
-            <div class="card" style="text-align:center;">
+                <p class="text-sm">Total Registered Hostels</p>
+            </article>
+
+            <article class="card" style="text-align:center;">
                 <h1>⚠️</h1>
                 <h2 id="totalComplaints">0</h2>
-                <p>Total Complaints</p>
-            </div>
+                <p class="text-sm">Reported Complaints</p>
+            </article>
+            <!-- Card 3: Revenue -->
+<article class="card" style="text-align:center; border-left: 5px solid #10B981;">
+    <h1>💰</h1>
+    <h2 id="totalRevenue">PKR 0</h2>
+    <p class="text-sm">Total Earnings (Commission)</p>
+</article>
+
+        </section>
+
+        <!-- ===== HOSTEL MANAGEMENT ===== -->
+        <section>
+            <h2>Hostel Verification & Management</h2>
+            <p class="text-sm mt-2">
+                Review registered hostels, verify authenticity, and monitor activity.
+            </p>
+
+            <div id="adminHostelList" class="grid mt-2"></div>
+        </section>
+
+    </main>
+<!-- ===== DANGER ZONE (SYSTEM CONTROL) ===== -->
+<section style="margin-top: 50px; border-top: 2px dashed #ddd; padding-top: 20px;">
+    
+    <div style="background: #FEF2F2; border: 1px solid #FECACA; padding: 20px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <strong style="color: #B91C1C;">Factory Reset</strong>
+            <p class="text-sm" style="color: #B91C1C;">Deletes all bookings, complaints, and resets hostels to default.</p>
         </div>
-
-        <h2>Manage Hostels</h2>
-        <div id="adminHostelList" class="grid mt-2"></div>
+        <button onclick="factoryReset()" class="btn" style="background: #DC2626; color: white; width: auto; padding: 10px 20px;">
+            Reset System
+        </button>
     </div>
-
+</section>
+    <!-- ================= SCRIPTS ================= -->
     <script src="js/app.js"></script>
-    <script>document.addEventListener('DOMContentLoaded', loadAdminDashboard);</script>
+    <script>
+        document.addEventListener("DOMContentLoaded", loadAdminDashboard);
+    </script>
+
 </body>
 </html>

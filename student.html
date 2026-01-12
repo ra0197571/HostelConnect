@@ -3,63 +3,288 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student - HostelConnect</title>
+    <title>HostelConnect | Student Dashboard</title>
+
+    <!-- Main Styles -->
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
-    <header class="header">
-        <div class="logo">HostelConnect</div>
-        <button onclick="logout()" class="nav-btn">Logout</button>
-    </header>
 
-    <div class="container">
-        <!-- Announcements (Pinned Top) -->
-        <div id="announcementList"></div>
-
-        <div class="tabs">
-            <div class="tab active" onclick="switchTab('find')">Find Hostel</div>
-            <div class="tab" onclick="switchTab('my-bookings')">My Bookings</div>
-            <div class="tab" onclick="switchTab('complaints')">Complaints</div>
+   
+<!-- ================= HEADER WITH NOTIFICATION ================= -->
+<header class="header">
+    <!-- UPDATED LOGO (BLUE THEME) -->
+<div style="display: flex; align-items: center; gap: 10px;">
+    <!-- 'H' Box -->
+    <div style="width: 40px; height: 40px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.4rem; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);">
+        H
+    </div>
+    <!-- Text -->
+    <span style="font-size: 1.5rem; font-weight: 800; color: var(--primary); letter-spacing: -0.5px;">
+        HostelConnect
+    </span>
+</div>
+    
+    <div style="display:flex; gap:15px; align-items:center;">
+        
+        <!-- NOTIFICATION BELL -->
+        <div style="position: relative;">
+            <div onclick="toggleNotifications()" style="cursor: pointer; background: white; padding: 8px; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                <span style="font-size: 1.2rem;">🔔</span>
+                <span id="notifBadge" style="position: absolute; top: 0; right: 0; background: red; color: white; font-size: 0.7rem; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white;">1</span>
+            </div>
+            <!-- Dropdown -->
+            <div id="notificationDropdown" class="hidden" style="position: absolute; top: 50px; right: 0; width: 300px; background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); border-radius: 10px; padding: 15px; z-index: 1000; border: 1px solid #eee;">
+                <h4 style="margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px;">Notifications</h4>
+                <div id="notifContent"><p style="font-size: 0.85rem; color: #666;">No new notifications.</p></div>
+            </div>
         </div>
 
-        <!-- 1. Find Hostel -->
+        <!-- SOS BUTTON -->
+        <button onclick="triggerSOS()" class="btn" style="background:#EF4444; color:white; padding:8px 15px; font-weight:bold; border:2px solid white; box-shadow:0 0 10px rgba(239,68,68,0.5); animation: pulse 2s infinite; font-size: 0.9rem;">
+            🚨 SOS
+        </button>
+
+        <!-- LOGOUT BUTTON (Fixed) -->
+        <button onclick="logout()" class="nav-btn" style="background: #F3F4F6; border: 1px solid #ddd; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+            Logout
+        </button>
+    </div>
+</header>
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <main class="container">
+
+       
+       
+
+        <!-- ===== TABS ===== -->
+        <nav class="tabs">
+            <div class="tab active" onclick="switchTab('find')">Find Hostels</div>
+            <div class="tab" onclick="switchTab('my-bookings')">My Bookings</div>
+            <div class="tab" onclick="switchTab('complaints')">Complaints</div>
+        </nav>
+
+        <!-- ================= FIND HOSTEL ================= -->
         <section id="find">
-            <div class="filter-box">
-                <div>
-                    <strong>Distance Filter</strong>
-                    <p class="text-sm" style="color:#666">Show hostels within <span id="distValue" style="color:var(--primary); font-weight:bold;">10 km</span></p>
-                </div>
-                <input type="range" min="1" max="10" value="10" style="width:200px" oninput="filterHostels(this.value)">
+
+            <!-- Filter -->
+            <!-- ================= FIXED DISTANCE FILTER ================= -->
+<div class="filter-box" style="background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 30px; border: 1px solid #f0f0f0;">
+    
+    <!-- HEADER ROW: Left (Text) & Right (Badge) ko alag rakha hai -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; width: 100%;">
+        
+        <!-- LEFT SIDE: Icon + Text -->
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <!-- Icon Box -->
+            <div style="background: #EFF6FF; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <span style="font-size: 1.4rem;">🗺️</span>
             </div>
+            
+            <!-- Text -->
+            <div style="display: flex; flex-direction: column;">
+                <h3 style="margin: 0; font-size: 1.1rem; color: #1F2937; line-height: 1.2;">Search Radius</h3>
+                <p style="margin: 0; font-size: 0.85rem; color: #9CA3AF; line-height: 1.2;">Find hostels near campus</p>
+            </div>
+        </div>
+        
+        <!-- RIGHT SIDE: Badge (Fixed Position) -->
+        <div style="background: var(--primary); color: white; padding: 8px 18px; border-radius: 12px; font-weight: 700; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); white-space: nowrap;">
+            <span id="distValue">10 km</span>
+        </div>
+
+    </div>
+
+    <!-- SLIDER -->
+    <input 
+        type="range" 
+        min="1" 
+        max="10" 
+        value="10"
+        oninput="filterHostels(this.value)"
+        style="width: 100%; cursor: pointer; height: 8px; border-radius: 5px; background: #E5E7EB; accent-color: var(--primary); outline: none; display: block;"
+    >
+
+    
+
+</div>
+
+            <!-- Hostel Cards -->
             <div id="hostelList" class="grid"></div>
         </section>
 
-        <!-- 2. My Bookings -->
+        <!-- ================= MY BOOKINGS ================= -->
         <section id="my-bookings" class="hidden">
-            <h2>Booking Status</h2>
+            <h2>My Booking Requests</h2>
+            <p class="text-sm mt-2">
+                Track the status of your hostel room booking requests.
+            </p>
             <div id="bookingList" class="grid mt-2"></div>
         </section>
 
-        <!-- 3. Complaints -->
+        <!-- ================= COMPLAINTS ================= -->
         <section id="complaints" class="hidden">
+
             <div class="grid">
+
+                <!-- Report Complaint -->
                 <div class="card">
-                    <h3>Report Issue</h3>
-                    <form onsubmit="submitComplaint(event)">
-                        <select id="complaintHostelSelect" class="form-control"></select>
-                        <textarea id="complaintText" class="form-control" placeholder="Describe issue (e.g. WiFi not working)" required></textarea>
-                        <button class="btn">Submit</button>
+                    <h3>Report an Issue</h3>
+                    <p class="text-sm mt-2">
+                        Submit hostel-related issues for quick resolution.
+                    </p>
+
+                    <form onsubmit="submitComplaint(event)" class="mt-2">
+                        <select id="complaintHostelSelect" class="form-control" required></select>
+
+                        <textarea 
+                            id="complaintText" 
+                            class="form-control" 
+                            placeholder="e.g. Wi-Fi not working, water issue..."
+                            rows="4"
+                            required>
+                        </textarea>
+
+                        <button class="btn btn-primary mt-2">
+                            Submit Complaint
+                        </button>
                     </form>
                 </div>
+
+                <!-- Complaint History -->
                 <div>
-                    <h3>Complaint History</h3>
-                    <div id="studentComplaintList"></div>
+                    <h3>My Complaint History</h3>
+                    <p class="text-sm mt-2">
+                        View the status of previously reported issues.
+                    </p>
+                    <div id="studentComplaintList" class="mt-2"></div>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+<!-- ================= REVIEW MODAL (Popup) ================= -->
+<div id="reviewModal" class="modal hidden">
+    <div class="modal-content">
+        <span onclick="closeReviewModal()" class="close-btn">&times;</span>
+        <h3>Rate & Review</h3>
+        <p class="text-sm">Share your experience with this hostel.</p>
+        
+        <form onsubmit="submitReview(event)" class="mt-2">
+            <input type="hidden" id="reviewHostelId"> <!-- Hidden ID tracker -->
+            
+            <div class="form-group">
+                <label>Rating</label>
+                <select id="reviewStars" class="form-control">
+                    <option value="5">★★★★★ (Excellent)</option>
+                    <option value="4">★★★★☆ (Good)</option>
+                    <option value="3">★★★☆☆ (Average)</option>
+                    <option value="2">★★☆☆☆ (Poor)</option>
+                    <option value="1">★☆☆☆☆ (Terrible)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Review Comment</label>
+                <textarea id="reviewText" class="form-control" rows="3" placeholder="e.g. Good food, but WiFi is slow..." required></textarea>
+            </div>
+
+            <button class="btn btn-primary">Submit Review</button>
+        </form>
+    </div>
+</div>
+<!-- ================= PAYMENT GATEWAY MODAL ================= -->
+<div id="paymentModal" class="modal hidden">
+    <div class="modal-content" style="max-width: 450px;">
+        <span onclick="closePaymentModal()" class="close-btn">&times;</span>
+        
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h2 style="color: var(--primary);">Secure Checkout 🔒</h2>
+            <p class="text-sm">Complete your booking securely.</p>
+        </div>
+
+        <!-- Bill Summary -->
+        <div style="background: #F3F4F6; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <span>Monthly Rent:</span>
+                <span id="payRent">PKR 0</span>
+            </div>
+            
+        </div>
+
+        <!-- Fake Payment Form -->
+        <form onsubmit="processPayment(event)">
+            <input type="hidden" id="payHostelId">
+            <input type="hidden" id="payHostelName">
+            <input type="hidden" id="payRoomType">
+
+            <div class="form-group">
+                <label>Cardholder Name</label>
+                <input type="text" class="form-control" placeholder="e.g.  John deo" required>
+            </div>
+
+            <div class="form-group">
+                <label>Card Number</label>
+                <input type="text" class="form-control" placeholder="0000 0000 0000 0000" maxlength="19" required>
+            </div>
+
+            <div style="display: flex; gap: 15px;">
+                <div class="form-group" style="flex: 1;">
+                    <label>Expiry</label>
+                    <input type="text" class="form-control" placeholder="MM/YY" maxlength="5" required>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>CVV</label>
+                    <input type="password" class="form-control" placeholder="123" maxlength="3" required>
                 </div>
             </div>
-        </section>
-    </div>
 
+            <button type="submit" id="payBtn" class="btn btn-primary" style="margin-top: 15px; font-size: 1.1rem;">
+                Pay Now
+            </button>
+        </form>
+    </div>
+</div>
+    <!-- ================= SCRIPTS ================= -->
     <script src="js/app.js"></script>
-    <script>document.addEventListener('DOMContentLoaded', loadStudentDashboard);</script>
+    <script>
+        document.addEventListener("DOMContentLoaded", loadStudentDashboard);
+    </script>
+<!-- ================= AI CHATBOT WIDGET ================= -->
+<div style="position: fixed; bottom: 20px; right: 20px; z-index: 2000;">
+    <!-- Chat Button -->
+    <button onclick="toggleChat()" style="background: var(--primary); color: white; width: 60px; height: 60px; border-radius: 50%; border: none; box-shadow: 0 5px 20px rgba(37,99,235,0.4); cursor: pointer; font-size: 1.8rem; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;">
+        💬
+    </button>
+
+    <!-- Chat Window -->
+    <div id="chatWindow" class="hidden" style="position: absolute; bottom: 80px; right: 0; width: 320px; background: white; border-radius: 15px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); overflow: hidden; border: 1px solid #eee; animation: slideUp 0.3s ease;">
+        <!-- Chat Header -->
+        <div style="background: var(--primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h4 style="margin: 0;">AI Assistant 🤖</h4>
+                <small style="opacity: 0.8;">Online</small>
+            </div>
+            <span onclick="toggleChat()" style="cursor: pointer; font-size: 1.2rem;">&times;</span>
+        </div>
+        
+        <!-- Chat Body -->
+        <div id="chatBody" style="height: 250px; padding: 15px; overflow-y: auto; background: #F9FAFB; display: flex; flex-direction: column; gap: 10px;">
+            <div style="align-self: flex-start; background: white; padding: 8px 12px; border-radius: 10px 10px 10px 0; border: 1px solid #eee; font-size: 0.9rem; max-width: 80%;">
+                👋 Hi! I'm HostelBot. Ask me about rent, wifi, or locations!
+            </div>
+        </div>
+
+        <!-- Chat Input -->
+        <div style="padding: 10px; border-top: 1px solid #eee; display: flex; gap: 5px;">
+            <input type="text" id="chatInput" placeholder="Type a message..." style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 20px; outline: none;">
+            <button onclick="sendMessage()" style="background: var(--primary); color: white; border: none; padding: 8px 12px; border-radius: 50%; cursor: pointer;">➤</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>
